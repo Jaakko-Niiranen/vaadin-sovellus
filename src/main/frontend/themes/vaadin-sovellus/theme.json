@@ -1,0 +1,9 @@
+{
+  "assets" : {
+    "@fontsource/cairo" : {
+      "*.css" : "@fontsource/cairo",
+      "files/*" : "@fontsource/cairo/files"
+    }
+  },
+  "lumoImports" : [ "typography", "color", "spacing", "badge", "utility" ]
+}

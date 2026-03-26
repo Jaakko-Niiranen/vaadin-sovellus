@@ -1,0 +1,20 @@
+@import url('./main-layout.css');
+@import url('./views/sampleperson-view.css');
+@import url('./views/samplepersontype-view.css');
+@import url('./views/gridwith-filters-view.css');
+@import url('./views/samplebook-view.css');
+@import url('@fontsource/cairo/index.css');    html, spreadsheet-view-export, grid-with-filters-view-export {
+      --lumo-primary-text-color: hsl(210, 90%, 52%);
+      --lumo-size-xl: 3rem;
+      --lumo-size-l: 2.5rem;
+      --lumo-size-m: 2rem;
+      --lumo-size-s: 1.75rem;
+      --lumo-size-xs: 1.5rem;
+      --lumo-space-xl: 1.875rem;
+      --lumo-space-l: 1.25rem;
+      --lumo-space-m: 0.625rem;
+      --lumo-space-s: 0.3125rem;
+      --lumo-space-xs: 0.1875rem;
+--lumo-font-family: Cairo;
+
+    }
