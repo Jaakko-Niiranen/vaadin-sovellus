@@ -1,8 +1,9 @@
 package com.example.application.data;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 public class SamplePerson extends AbstractEntity {
@@ -16,6 +17,29 @@ public class SamplePerson extends AbstractEntity {
     private String occupation;
     private String role;
     private boolean important;
+
+    @ManyToOne
+    @JoinColumn(name = "sample_person_type_id")
+    private SamplePersonType samplePersonType;
+
+    @ManyToMany(mappedBy = "samplePersons", fetch = FetchType.EAGER)
+    private List<SampleBook> sampleBooks;
+
+    public List<SampleBook> getSampleBooks() {
+        return sampleBooks;
+    }
+
+    public void setSampleBooks(List<SampleBook> sampleBooks) {
+        this.sampleBooks = sampleBooks;
+    }
+
+    public SamplePersonType getSamplePersonType() {
+        return samplePersonType;
+    }
+
+    public void setSamplePersonType(SamplePersonType samplePersonType) {
+        this.samplePersonType = samplePersonType;
+    }
 
     public String getFirstName() {
         return firstName;

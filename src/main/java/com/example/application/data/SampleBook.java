@@ -1,9 +1,9 @@
 package com.example.application.data;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Lob;
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 public class SampleBook extends AbstractEntity {
@@ -16,6 +16,20 @@ public class SampleBook extends AbstractEntity {
     private LocalDate publicationDate;
     private Integer pages;
     private String isbn;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name="samplebook_sampleperson",
+    joinColumns = @JoinColumn(name = "sampleBook_id", referencedColumnName = "id"),
+    inverseJoinColumns = @JoinColumn(name = "samplePerson_id", referencedColumnName = "id"))
+    private List<SamplePerson> samplePersons;
+
+    public List<SamplePerson> getSamplePersons() {
+        return samplePersons;
+    }
+
+    public void setSamplePersons(List<SamplePerson> samplePersons) {
+        this.samplePersons = samplePersons;
+    }
 
     public byte[] getImage() {
         return image;

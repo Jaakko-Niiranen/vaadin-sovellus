@@ -1,10 +1,13 @@
 package com.example.application.views.samplebook;
 
 import com.example.application.data.SampleBook;
+import com.example.application.data.SamplePerson;
 import com.example.application.services.SampleBookService;
+import com.example.application.services.SamplePersonService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
@@ -12,6 +15,7 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.NativeLabel;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.notification.NotificationVariant;
@@ -22,6 +26,7 @@ import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.converter.StringToIntegerConverter;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
@@ -29,19 +34,24 @@ import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
+import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 import jakarta.annotation.security.RolesAllowed;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.vaadin.lineawesome.LineAwesomeIconUrl;
 
 @PageTitle("Samplebook")
 @Route("samplebook/:sampleBookID?/:action?(edit)")
 @Menu(order = 5, icon = LineAwesomeIconUrl.COLUMNS_SOLID)
-@RolesAllowed("ADMIN")
+@AnonymousAllowed
 public class SamplebookView extends Div implements BeforeEnterObserver {
 
     private final String SAMPLEBOOK_ID = "sampleBookID";
@@ -56,6 +66,7 @@ public class SamplebookView extends Div implements BeforeEnterObserver {
     private DatePicker publicationDate;
     private TextField pages;
     private TextField isbn;
+    private MultiSelectComboBox<SamplePerson> samplePersons;
 
     private final Button cancel = new Button("Cancel");
     private final Button save = new Button("Save");
@@ -65,9 +76,12 @@ public class SamplebookView extends Div implements BeforeEnterObserver {
     private SampleBook sampleBook;
 
     private final SampleBookService sampleBookService;
+    private final SamplePersonService samplePersonService;
 
-    public SamplebookView(SampleBookService sampleBookService) {
+    public SamplebookView(SampleBookService sampleBookService,
+                          SamplePersonService samplePersonService) {
         this.sampleBookService = sampleBookService;
+        this.samplePersonService = samplePersonService;
         addClassNames("samplebook-view");
 
         // Create UI
@@ -94,6 +108,17 @@ public class SamplebookView extends Div implements BeforeEnterObserver {
         grid.addColumn("publicationDate").setAutoWidth(true);
         grid.addColumn("pages").setAutoWidth(true);
         grid.addColumn("isbn").setAutoWidth(true);
+        grid.addColumn(new ComponentRenderer<>((sampleBook -> {
+                    if (sampleBook.getSamplePersons().isEmpty())
+                        return new Span("");
+                    AtomicReference<String> samplePersonString = new AtomicReference<>("");
+                    sampleBook.getSamplePersons().forEach(samplePerson ->
+                            samplePersonString.set(
+                                    samplePersonString + samplePerson.getFirstName() + " " + samplePerson.getLastName() + " "));
+                    return new Span(samplePersonString.get());
+                })))
+                .setHeader("Sample Persons").setAutoWidth(true);
+
         grid.setItems(query -> sampleBookService.list(VaadinSpringDataHelpers.toSpringPageRequest(query)).stream());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
 
@@ -107,11 +132,26 @@ public class SamplebookView extends Div implements BeforeEnterObserver {
             }
         });
 
+        samplePersons.setItems(query -> this.samplePersonService.list(
+                VaadinSpringDataHelpers.toSpringPageRequest(query)).stream());
+        samplePersons.setItemLabelGenerator(samplePerson -> samplePerson.getFirstName() + " " +samplePerson.getLastName());
+        // vaihtoehto 2: Määritä entiteetille getteri getFullName()
+        // samplePersons.setItemLabelGenerator(SamplePerson::getFullName)
+
         // Configure Form
         binder = new BeanValidationBinder<>(SampleBook.class);
 
         // Bind fields. This is where you'd define e.g. validation rules
         binder.forField(pages).withConverter(new StringToIntegerConverter("Only numbers are allowed")).bind("pages");
+
+        // Määritetään miten List muutetaan setiksi ja toisin päin.
+        binder.forField(samplePersons).bind(
+                // missä muodossa entiteetin tieto tulee komponentille
+                sampleBook -> new HashSet<>(sampleBook.getSamplePersons()),
+                // kmissä muodossa formilta tulee tieto entiteetille
+                (sampleBook, formSet) ->
+                        sampleBook.setSamplePersons(new ArrayList<>(formSet))
+        );
 
         binder.bindInstanceFields(this);
 
@@ -182,7 +222,9 @@ public class SamplebookView extends Div implements BeforeEnterObserver {
         publicationDate = new DatePicker("Publication Date");
         pages = new TextField("Pages");
         isbn = new TextField("Isbn");
-        formLayout.add(imageLabel, image, name, author, publicationDate, pages, isbn);
+        samplePersons = new MultiSelectComboBox<>("Sample Persons");
+        formLayout.add(imageLabel, image, name, author, publicationDate,
+                pages, isbn, samplePersons);
 
         editorDiv.add(formLayout);
         createButtonLayout(editorLayoutDiv);

@@ -1,6 +1,9 @@
 package com.example.application.data;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+
+import java.util.List;
 
 @Entity
 public class SamplePersonType extends AbstractEntity {
@@ -8,6 +11,17 @@ public class SamplePersonType extends AbstractEntity {
     private String name;
     private String description;
     private boolean active;
+
+    @OneToMany(mappedBy = "samplePersonType")
+    private List<SamplePerson> samplePersonList;
+
+    public List<SamplePerson> getSamplePersonList() {
+        return samplePersonList;
+    }
+
+    public void setSamplePersonList(List<SamplePerson> samplePersonList) {
+        this.samplePersonList = samplePersonList;
+    }
 
     public String getName() {
         return name;
