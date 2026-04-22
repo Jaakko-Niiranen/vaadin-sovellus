@@ -25,13 +25,14 @@ vaadin-side-nav-item vaadin-icon {
 
 vaadin-side-nav-item::part(content) {
   border-radius: var(--lumo-border-radius-m);
-  color: rgba(247, 244, 238, 0.84);
+  color: rgba(0, 0, 0, 0.84);
   padding: 0.8rem 0.9rem;
+  font-style: italic;
 }
 
 vaadin-side-nav-item[current]::part(content) {
-  background: rgba(255, 255, 255, 0.14);
-  color: #ffffff;
+  background: #ede8d09a;
+  color: #303030bb;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
@@ -42,6 +43,7 @@ vaadin-side-nav-item[current]::part(content) {
   padding: 1rem 1.1rem;
   min-height: var(--lumo-size-xl);
   box-sizing: border-box;
+  font-style: italic;
 }
 
 [slot="drawer"]:is(header) {

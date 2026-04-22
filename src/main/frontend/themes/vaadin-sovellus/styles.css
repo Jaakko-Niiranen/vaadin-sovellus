@@ -67,6 +67,7 @@ h5,
 h6 {
   color: var(--lumo-header-text-color);
   letter-spacing: -0.02em;
+  font-style: italic;
 }
 
 a {
