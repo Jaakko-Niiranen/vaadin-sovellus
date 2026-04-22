@@ -1,4 +1,5 @@
 @import url('./main-layout.css');
+@import url('./views/hello-world-view.css');
 @import url('./views/sampleperson-view.css');
 @import url('./views/samplepersontype-view.css');
 @import url('./views/gridwith-filters-view.css');

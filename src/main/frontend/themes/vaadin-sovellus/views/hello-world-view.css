@@ -1,0 +1,24 @@
+.hello-world-view {
+  align-items: center;
+  justify-content: center;
+  gap: var(--lumo-space-m);
+}
+
+.hello-world-view .hello-world-title {
+  margin-bottom: 0;
+  padding: 0.35rem 1rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(198, 96, 61, 0.18), rgba(215, 168, 111, 0.3));
+  color: var(--app-accent-color-dark);
+  box-shadow: var(--lumo-box-shadow-xs);
+}
+
+.hello-world-view vaadin-text-field {
+  width: min(100%, 22rem);
+}
+
+.hello-world-view vaadin-horizontal-layout {
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+}

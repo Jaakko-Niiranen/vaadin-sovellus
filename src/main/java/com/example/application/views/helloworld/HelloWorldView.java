@@ -2,6 +2,7 @@ package com.example.application.views.helloworld;
 
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Paragraph;
@@ -21,32 +22,48 @@ import org.vaadin.lineawesome.LineAwesomeIconUrl;
 @AnonymousAllowed
 public class HelloWorldView extends VerticalLayout {
 
-    private TextField name;
-    private Button sayHello;
+    private final TextField name;
+    private final Button sayHello;
 
     public HelloWorldView() {
-        H2 h2 = new H2("This is otsikko");
-        name = new TextField("Your name");
-        sayHello = new Button("Say hello");
+        addClassName("hello-world-view");
+        setSpacing(true);
+        setPadding(true);
 
-        Paragraph paragraph = new Paragraph("Muokkaa tätä tekstiä");
+        H2 heading = new H2("Hello World!");
+        heading.addClassName("hello-world-title");
+
+        Paragraph instructions = new Paragraph();
+        instructions.getStyle()
+                .set("color", "var(--lumo-secondary-text-color)")
+                .set("margin", "0");
+
+        name = new TextField();
+        name.setPlaceholder("Kirjoita nimesi");
+        name.setHelperText("Tervehdys päivittää alla olevan viestin.");
+
+        sayHello = new Button("Say hello");
+        sayHello.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_LARGE);
+
+        Paragraph greeting = new Paragraph("Muokkaa tätä tekstiä painamalla nappia.");
+        greeting.getStyle()
+                .set("background-color", "var(--lumo-primary-color-10pct)")
+                .set("border-radius", "var(--lumo-border-radius-m)")
+                .set("padding", "var(--lumo-space-m)")
+                .set("font-weight", "600");
 
         sayHello.addClickListener(e -> {
             Notification.show("Hello " + name.getValue());
-            paragraph.setText(name.getValue());
+            greeting.setText("Hei " + name.getValue() + "!");
         });
         sayHello.addClickShortcut(Key.ENTER);
 
-        HorizontalLayout horizontal = new HorizontalLayout();
-        horizontal.add(new Paragraph("Moikka"));
-        horizontal.add(new Anchor("www.google.com"));
-        horizontal.add(new Paragraph("Moikka"), paragraph);
+        HorizontalLayout links = new HorizontalLayout();
+        links.setAlignItems(Alignment.CENTER);
+        links.add(greeting);
 
-        add(horizontal);
-        setMargin(true);
-        setHorizontalComponentAlignment(Alignment.CENTER, h2, name, sayHello);
-        add(h2);
-        add(name, sayHello);
+        setHorizontalComponentAlignment(Alignment.CENTER, heading, instructions, name, sayHello, links);
+        add(heading, instructions, name, sayHello, links);
     }
 
 }
