@@ -1,22 +1,51 @@
 .sampleperson-view {
+  --sampleperson-panel-bg: rgba(255, 252, 246, 0.94);
+  --sampleperson-panel-border: rgba(198, 96, 61, 0.22);
+  --sampleperson-highlight: rgba(198, 96, 61, 0.13);
+  --sampleperson-grid-stripe: rgba(255, 238, 216, 0.58);
+
   display: flex;
   flex-direction: column;
   height: 100%;
+  padding: var(--lumo-space-m);
+  background:
+    radial-gradient(circle at top right, rgba(198, 96, 61, 0.18), transparent 28rem),
+    linear-gradient(135deg, rgba(255, 252, 246, 0.75), rgba(246, 240, 228, 0.95));
 }
 
 .sampleperson-view vaadin-split-layout {
   width: 100%;
   height: 100%;
+  overflow: hidden;
+  border: 1px solid var(--sampleperson-panel-border);
+  border-radius: var(--lumo-border-radius-l);
+  background: var(--sampleperson-panel-bg);
+  box-shadow: var(--lumo-box-shadow-s);
 }
 
 .sampleperson-view vaadin-grid {
   height: 100%;
+  border-radius: var(--lumo-border-radius-l) 0 0 var(--lumo-border-radius-l);
+  background: transparent;
+  --vaadin-grid-cell-padding: var(--lumo-space-s) var(--lumo-space-m);
+  --vaadin-grid-header-cell-background: rgba(198, 96, 61, 0.16);
+  --vaadin-grid-header-cell-color: var(--app-accent-color-dark);
+}
+
+.sampleperson-view vaadin-grid::part(row):nth-child(even) {
+  background: var(--sampleperson-grid-stripe);
+}
+
+.sampleperson-view vaadin-grid::part(selected-row-cell) {
+  background: var(--sampleperson-highlight);
 }
 
 .sampleperson-view .editor-layout {
   display: flex;
   flex-direction: column;
   width: 400px;
+  background: rgba(255, 250, 242, 0.88);
+  border-left: 1px solid var(--sampleperson-panel-border);
 }
 
 .sampleperson-view .editor {
@@ -25,8 +54,27 @@
   overflow-y: auto;
 }
 
+.sampleperson-view vaadin-form-layout {
+  padding: var(--lumo-space-m);
+  border: 1px solid var(--sampleperson-panel-border);
+  border-radius: var(--lumo-border-radius-l);
+  background: rgba(255, 255, 255, 0.64);
+}
+
+.sampleperson-view vaadin-text-field,
+.sampleperson-view vaadin-date-picker,
+.sampleperson-view vaadin-combo-box,
+.sampleperson-view vaadin-multi-select-combo-box {
+  --vaadin-input-field-background: rgba(255, 255, 255, 0.96);
+  --vaadin-input-field-border-color: rgba(198, 96, 61, 0.26);
+  --vaadin-input-field-hover-highlight: rgba(198, 96, 61, 0.2);
+  --vaadin-input-field-label-color: var(--app-accent-color-dark);
+}
+
 .sampleperson-view .editor vaadin-checkbox {
   padding-top: var(--lumo-space-m);
+  color: var(--app-accent-color-dark);
+  font-weight: 600;
 }
 
 .sampleperson-view .button-layout {
@@ -38,6 +86,15 @@
   padding-left: var(--lumo-space-l);
   padding-right: var(--lumo-space-l);
   gap: var(--lumo-space-m);
+}
+
+.sampleperson-view .button-layout vaadin-button {
+  border-radius: 999px;
+  box-shadow: 0 6px 14px rgba(33, 49, 62, 0.1);
+}
+
+.sampleperson-view .button-layout vaadin-button[theme~='primary'] {
+  background: linear-gradient(135deg, var(--app-accent-color), var(--app-accent-color-dark));
 }
 
 .sampleperson-view .grid-wrapper {
