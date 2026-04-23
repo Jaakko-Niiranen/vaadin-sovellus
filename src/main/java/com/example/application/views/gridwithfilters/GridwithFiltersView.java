@@ -66,7 +66,8 @@ public class GridwithFiltersView extends Div {
         HorizontalLayout mobileFilters = new HorizontalLayout();
         mobileFilters.setWidthFull();
         mobileFilters.addClassNames(LumoUtility.Padding.MEDIUM, LumoUtility.BoxSizing.BORDER,
-                LumoUtility.AlignItems.CENTER);
+                LumoUtility.AlignItems.CENTER, LumoUtility.Background.CONTRAST_5, LumoUtility.TextColor.HEADER,
+                LumoUtility.BorderRadius.MEDIUM, LumoUtility.BoxShadow.XSMALL);
         mobileFilters.addClassName("mobile-filters");
 
         Icon mobileIcon = new Icon("lumo", "plus");
@@ -99,7 +100,8 @@ public class GridwithFiltersView extends Div {
             setWidthFull();
             addClassName("filter-layout");
             addClassNames(LumoUtility.Padding.Horizontal.LARGE, LumoUtility.Padding.Vertical.MEDIUM,
-                    LumoUtility.BoxSizing.BORDER);
+                    LumoUtility.BoxSizing.BORDER, LumoUtility.Background.BASE, LumoUtility.BoxShadow.SMALL,
+                    LumoUtility.BorderRadius.LARGE, LumoUtility.Border.ALL, LumoUtility.BorderColor.CONTRAST_10);
             name.setPlaceholder("First or last name");
 
             occupations.setItems("Insurance Clerk", "Mortarman", "Beer Coil Cleaner", "Scale Attendant");
@@ -232,7 +234,8 @@ public class GridwithFiltersView extends Div {
         grid.setItems(query -> samplePersonService.list(VaadinSpringDataHelpers.toSpringPageRequest(query), filters)
                 .stream());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
-        grid.addClassNames(LumoUtility.Border.TOP, LumoUtility.BorderColor.CONTRAST_10);
+        grid.addClassNames(LumoUtility.Border.TOP, LumoUtility.BorderColor.CONTRAST_10,
+                LumoUtility.BorderRadius.MEDIUM, LumoUtility.BoxShadow.XSMALL);
 
         return grid;
     }
