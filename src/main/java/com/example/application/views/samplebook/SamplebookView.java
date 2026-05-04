@@ -211,10 +211,13 @@ public class SamplebookView extends Div implements BeforeEnterObserver {
         editorLayoutDiv.add(editorDiv);
 
         FormLayout formLayout = new FormLayout();
+        formLayout.addClassName("samplebook-editor-card");
         NativeLabel imageLabel = new NativeLabel("Image");
         imagePreview = new Image();
+        imagePreview.addClassName("samplebook-image-preview");
         imagePreview.setWidth("100%");
         image = new Upload();
+        image.addClassName("samplebook-image-upload");
         image.getStyle().set("box-sizing", "border-box");
         image.getElement().appendChild(imagePreview.getElement());
         name = new TextField("Name");
@@ -237,6 +240,8 @@ public class SamplebookView extends Div implements BeforeEnterObserver {
         buttonLayout.setClassName("button-layout");
         cancel.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        cancel.addClassName("samplebook-action-button");
+        save.addClassName("samplebook-action-button");
         buttonLayout.add(save, cancel);
         editorLayoutDiv.add(buttonLayout);
     }

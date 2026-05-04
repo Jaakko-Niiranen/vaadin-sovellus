@@ -29,6 +29,58 @@
   padding-top: var(--lumo-space-m);
 }
 
+.samplebook-view .editor vaadin-checkbox {
+  padding-top: var(--lumo-space-m);
+}
+
+.samplebook-view .samplebook-editor-card {
+  padding: var(--lumo-space-m);
+  border: 1px solid rgba(198, 96, 61, 0.22);
+  border-radius: var(--lumo-border-radius-l);
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: var(--lumo-box-shadow-xs);
+  transform-origin: center;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease;
+}
+
+.samplebook-view .samplebook-editor-card:hover {
+  transform: scale(1.03);
+  border-color: rgba(198, 96, 61, 0.38);
+  box-shadow: var(--lumo-box-shadow-s);
+}
+
+.samplebook-view .samplebook-editor-card:focus-within {
+  border-color: var(--app-accent-color);
+  box-shadow:
+    0 0 0 3px var(--lumo-primary-color-10pct),
+    var(--lumo-box-shadow-s);
+}
+
+.samplebook-view .samplebook-image-upload {
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.samplebook-view .samplebook-image-upload:hover {
+  transform: translateY(-2px);
+}
+
+.samplebook-view .samplebook-image-upload:focus-within {
+  box-shadow: 0 0 0 3px var(--lumo-primary-color-10pct);
+}
+
+.samplebook-view .samplebook-image-preview {
+  border-radius: var(--lumo-border-radius-m);
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
 .samplebook-view .button-layout {
   width: 100%;
   flex-wrap: wrap;
@@ -38,6 +90,26 @@
   padding-left: var(--lumo-space-l);
   padding-right: var(--lumo-space-l);
   gap: var(--lumo-space-m);
+}
+
+.samplebook-view .samplebook-action-button {
+  opacity: 0.86;
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.samplebook-view .samplebook-action-button:hover {
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+.samplebook-view .samplebook-action-button[focus-ring] {
+  opacity: 1;
+  box-shadow:
+    0 0 0 3px var(--lumo-primary-color-10pct),
+    var(--lumo-box-shadow-xs);
 }
 
 .samplebook-view .grid-wrapper {
