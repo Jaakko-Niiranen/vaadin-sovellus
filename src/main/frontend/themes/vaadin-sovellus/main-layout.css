@@ -76,6 +76,10 @@
   font-weight: 700;
 }
 
+vaadin-side-nav-item {
+  margin-bottom: 0.4rem;
+}
+
 vaadin-scroller[slot="drawer"] {
   padding: var(--lumo-space-m);
 }
