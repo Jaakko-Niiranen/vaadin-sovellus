@@ -50,7 +50,7 @@ import org.vaadin.lineawesome.LineAwesomeIconUrl;
 
 @PageTitle("Samplebook")
 @Route("samplebook/:sampleBookID?/:action?(edit)")
-@Menu(order = 5, icon = LineAwesomeIconUrl.COLUMNS_SOLID)
+@Menu(order = 5, icon = LineAwesomeIconUrl.BOOK_SOLID)
 @AnonymousAllowed
 public class SamplebookView extends Div implements BeforeEnterObserver {
 

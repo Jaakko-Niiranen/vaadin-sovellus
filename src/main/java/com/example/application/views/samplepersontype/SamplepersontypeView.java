@@ -34,7 +34,7 @@ import org.vaadin.lineawesome.LineAwesomeIconUrl;
 
 @PageTitle("Samplepersontype")
 @Route("samplepersontype/:samplePersonTypeID?/:action?(edit)")
-@Menu(order = 3, icon = LineAwesomeIconUrl.COLUMNS_SOLID)
+@Menu(order = 3, icon = LineAwesomeIconUrl.USERS_COG_SOLID)
 @RolesAllowed("USER")
 @Uses(Icon.class)
 public class SamplepersontypeView extends Div implements BeforeEnterObserver {

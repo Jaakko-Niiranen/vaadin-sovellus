@@ -89,12 +89,44 @@ vaadin-side-nav-item::part(content) {
   color: rgba(0, 0, 0, 0.84);
   padding: 0.8rem 0.9rem;
   font-style: italic;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease;
+}
+
+vaadin-side-nav-item:not([current]):hover::part(content) {
+  background: rgba(237, 232, 208, 0.45);
+  color: #303030dd;
+  transform: translateX(4px) scale(1.015);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.10),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.10);
 }
 
 vaadin-side-nav-item[current]::part(content) {
   background: #ede8d09a;
-  color: #303030bb;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  color: #000000;
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.18),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  transform: translateX(6px) scale(1.035);
+  animation: selected-nav-bounce 260ms ease-out;
+}
+
+@keyframes selected-nav-bounce {
+  0% {
+    transform: translateX(0) scale(1);
+  }
+
+  55% {
+    transform: translateX(8px) scale(1.045);
+  }
+
+  100% {
+    transform: translateX(6px) scale(1.035);
+  }
 }
 
 [slot="drawer"]:is(header, footer) {

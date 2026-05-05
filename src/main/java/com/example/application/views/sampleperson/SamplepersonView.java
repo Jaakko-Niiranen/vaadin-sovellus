@@ -50,7 +50,7 @@ import org.vaadin.lineawesome.LineAwesomeIconUrl;
 
 @PageTitle("Sampleperson")
 @Route("sampleperson/:samplePersonID?/:action?(edit)")
-@Menu(order = 2, icon = LineAwesomeIconUrl.COLUMNS_SOLID)
+@Menu(order = 2, icon = LineAwesomeIconUrl.USER_FRIENDS_SOLID)
 @AnonymousAllowed
 @Uses(Icon.class)
 public class SamplepersonView extends Div implements BeforeEnterObserver {
