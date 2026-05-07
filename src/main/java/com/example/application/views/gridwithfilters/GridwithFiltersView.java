@@ -35,6 +35,10 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.data.jpa.domain.Specification;
 import org.vaadin.lineawesome.LineAwesomeIconUrl;
+import com.example.application.data.SampleBook;
+import com.example.application.data.SamplePersonType;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 
 @PageTitle("Grid with Filters")
 @Route("grid-with-filters")
@@ -92,8 +96,12 @@ public class GridwithFiltersView extends Div {
         private final TextField phone = new TextField("Phone");
         private final DatePicker startDate = new DatePicker("Date of Birth");
         private final DatePicker endDate = new DatePicker();
+
         private final MultiSelectComboBox<String> occupations = new MultiSelectComboBox<>("Occupation");
         private final CheckboxGroup<String> roles = new CheckboxGroup<>("Role");
+
+        private final TextField personType = new TextField("Person type");
+        private final TextField book = new TextField("Book");
 
         public Filters(Runnable onSearch) {
 
@@ -119,6 +127,8 @@ public class GridwithFiltersView extends Div {
                 endDate.clear();
                 occupations.clear();
                 roles.clear();
+                personType.clear();
+                book.clear();
                 onSearch.run();
             });
             Button searchBtn = new Button("Search");
@@ -129,7 +139,7 @@ public class GridwithFiltersView extends Div {
             actions.addClassName(LumoUtility.Gap.SMALL);
             actions.addClassName("actions");
 
-            add(name, phone, createDateRangeFilter(), occupations, roles, actions);
+            add(name, phone, createDateRangeFilter(), occupations, roles, personType, book, actions);
         }
 
         private Component createDateRangeFilter() {
@@ -197,6 +207,38 @@ public class GridwithFiltersView extends Div {
                     rolePredicates.add(criteriaBuilder.equal(criteriaBuilder.literal(role), root.get(databaseColumn)));
                 }
                 predicates.add(criteriaBuilder.or(rolePredicates.toArray(Predicate[]::new)));
+            }
+            if (!personType.isEmpty()) {
+                Join<SamplePerson, SamplePersonType> personTypeJoin =
+                        root.join("samplePersonType", JoinType.LEFT);
+
+                String lowerCaseFilter = "%" + personType.getValue().toLowerCase() + "%";
+
+                predicates.add(criteriaBuilder.like(
+                        criteriaBuilder.lower(personTypeJoin.get("name")),
+                        lowerCaseFilter
+                ));
+            }
+
+            if (!book.isEmpty()) {
+                Join<SamplePerson, SampleBook> bookJoin =
+                        root.join("sampleBooks", JoinType.LEFT);
+
+                String lowerCaseFilter = "%" + book.getValue().toLowerCase() + "%";
+
+                Predicate bookNameMatch = criteriaBuilder.like(
+                        criteriaBuilder.lower(bookJoin.get("name")),
+                        lowerCaseFilter
+                );
+
+                Predicate bookAuthorMatch = criteriaBuilder.like(
+                        criteriaBuilder.lower(bookJoin.get("author")),
+                        lowerCaseFilter
+                );
+
+                predicates.add(criteriaBuilder.or(bookNameMatch, bookAuthorMatch));
+
+                query.distinct(true);
             }
             return criteriaBuilder.and(predicates.toArray(Predicate[]::new));
         }
