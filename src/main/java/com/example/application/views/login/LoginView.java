@@ -25,7 +25,7 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver {
         LoginI18n i18n = LoginI18n.createDefault();
         i18n.setHeader(new LoginI18n.Header());
         i18n.getHeader().setTitle("Vaadin sovellus");
-        i18n.getHeader().setDescription("Login using user/user or admin/admin");
+        i18n.getHeader().setDescription("Login using user/user123 or admin/admin123");
         i18n.setAdditionalInformation(null);
         setI18n(i18n);
 
