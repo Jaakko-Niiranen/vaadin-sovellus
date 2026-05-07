@@ -10,6 +10,8 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.internal.RouteUtil;
 import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
+import com.vaadin.flow.component.html.Anchor;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 @AnonymousAllowed
 @PageTitle("Login")
@@ -29,7 +31,21 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver {
         i18n.setAdditionalInformation(null);
         setI18n(i18n);
 
-        setForgotPasswordButtonVisible(false);
+        Anchor registerLink = new Anchor("register", "Rekisteröidy");
+        registerLink.getStyle()
+                .set("color", "var(--app-accent-color-dark)")
+                .set("font-size", "var(--lumo-font-size-m)")
+                .set("text-decoration", "none");
+
+        VerticalLayout footerLayout = new VerticalLayout(registerLink);
+        footerLayout.setPadding(false);
+        footerLayout.setSpacing(false);
+        footerLayout.setAlignItems(VerticalLayout.Alignment.CENTER);
+        footerLayout.setWidthFull();
+
+        getFooter().add(footerLayout);
+
+        setForgotPasswordButtonVisible(true);
         setOpened(true);
     }
 
