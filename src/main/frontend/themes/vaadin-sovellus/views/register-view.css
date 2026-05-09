@@ -1,0 +1,10 @@
+.orange-button {
+    background-color: var(--app-accent-color);
+    color: white;
+    font-weight: bold;
+    border-radius: var(--lumo-border-radius-m);
+}
+
+.orange-button:hover {
+    background-color: var(--app-accent-color-dark);
+}
