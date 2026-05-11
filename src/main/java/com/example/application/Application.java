@@ -4,6 +4,7 @@ import com.example.application.data.SamplePersonRepository;
 import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.page.AppShellConfigurator;
+import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
 import javax.sql.DataSource;
@@ -22,6 +23,7 @@ import org.springframework.context.annotation.Bean;
  *
  */
 @SpringBootApplication
+@Push
 @StyleSheet(Lumo.STYLESHEET)
 @StyleSheet("styles.css")
 @NpmPackage(value = "@fontsource/cairo", version = "4.5.0")

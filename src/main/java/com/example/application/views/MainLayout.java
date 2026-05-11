@@ -42,6 +42,7 @@ public class MainLayout extends AppLayout implements AfterNavigationObserver {
 
     private H1 viewTitle;
     private HasElement currentViewContent;
+    private Avatar userAvatar;
 
     private final AuthenticatedUser authenticatedUser;
     private final AccessAnnotationChecker accessChecker;
@@ -107,14 +108,11 @@ public class MainLayout extends AppLayout implements AfterNavigationObserver {
         if (maybeUser.isPresent()) {
             User user = maybeUser.get();
 
-            Avatar avatar = new Avatar(user.getName());
-            if (user.getProfilePicture() != null) {
-                StreamResource resource = new StreamResource("profile-pic",
-                        () -> new ByteArrayInputStream(user.getProfilePicture()));
-                avatar.setImageResource(resource);
-            }
-            avatar.setThemeName("xsmall");
-            avatar.getElement().setAttribute("tabindex", "-1");
+            userAvatar = new Avatar(user.getName());
+            updateProfilePicture(userAvatar, user);
+
+            userAvatar.setThemeName("xsmall");
+            userAvatar.getElement().setAttribute("tabindex", "-1");
 
             Span userIdentifier = new Span(user.getUsername());
             userIdentifier.addClassName("app-header__user-identifier");
@@ -126,7 +124,7 @@ public class MainLayout extends AppLayout implements AfterNavigationObserver {
             logoutButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
             logoutButton.addClassName("app-header__logout");
 
-            layout.add(avatar, userIdentifier, logoutButton);
+            layout.add(userAvatar, userIdentifier, logoutButton);
         } else {
             Span userIdentifier = new Span("Vierailija");
             userIdentifier.addClassName("app-header__user-identifier");
@@ -139,6 +137,25 @@ public class MainLayout extends AppLayout implements AfterNavigationObserver {
 
         return layout;
     }
+
+    private void updateProfilePicture(Avatar avatar, User user) {
+        if (avatar == null || user == null) {
+            return;
+        }
+
+        avatar.setName(user.getName());
+
+        if (user.getProfilePicture() != null) {
+            StreamResource resource = new StreamResource(
+                    "profile-pic-" + System.currentTimeMillis() + ".png",
+                    () -> new ByteArrayInputStream(user.getProfilePicture())
+            );
+
+            avatar.setImageResource(resource);
+        } else {
+            avatar.setImage(null);
+        }
+    }    
 
     @Override
     public void showRouterLayoutContent(HasElement content) {
@@ -194,6 +211,12 @@ public class MainLayout extends AppLayout implements AfterNavigationObserver {
     @Override
     public void afterNavigation(AfterNavigationEvent event) {
         viewTitle.setText(getCurrentPageTitle());
+
+        authenticatedUser.get().ifPresent(user -> {
+            if (userAvatar != null) {
+                updateProfilePicture(userAvatar, user);
+            }
+        });
     }
 
     private String getCurrentPageTitle() {
