@@ -1,6 +1,6 @@
 .gridwith-filters-view .filter-layout {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   align-items: end;
   gap: 0 var(--lumo-space-l);
 }
