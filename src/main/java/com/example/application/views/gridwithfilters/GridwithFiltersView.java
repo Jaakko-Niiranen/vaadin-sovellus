@@ -39,6 +39,11 @@ import com.example.application.data.SampleBook;
 import com.example.application.data.SamplePersonType;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
+import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.html.H2;
+
+import java.util.Locale;
+import java.util.Map;
 
 @PageTitle("Grid with Filters")
 @Route("grid-with-filters")
@@ -48,21 +53,144 @@ import jakarta.persistence.criteria.JoinType;
 public class GridwithFiltersView extends Div {
 
     private Grid<SamplePerson> grid;
-
     private Filters filters;
+    private H2 pageHeading;
+    private Span mobileFiltersHeading;
+    private ComboBox<Locale> languageSelect;
+
+    private Locale currentLocale = new Locale("fi");
+
     private final SamplePersonService samplePersonService;
 
+    private static final Map<String, Map<String, String>> TRANSLATIONS = Map.of(
+            "fi", Map.ofEntries(
+                    Map.entry("page.title", "Henkilöhaku"),
+                    Map.entry("language", "Kieli"),
+                    Map.entry("language.fi", "Suomi"),
+                    Map.entry("language.en", "Englanti"),
+                    Map.entry("filters", "Suodattimet"),
+                    Map.entry("name", "Nimi"),
+                    Map.entry("phone", "Puhelin"),
+                    Map.entry("dateOfBirth", "Syntymäaika"),
+                    Map.entry("occupation", "Ammatti"),
+                    Map.entry("role", "Rooli"),
+                    Map.entry("personType", "Henkilötyyppi"),
+                    Map.entry("book", "Kirja"),
+                    Map.entry("firstOrLastName", "Etu- tai sukunimi"),
+                    Map.entry("from", "Alkaen"),
+                    Map.entry("to", "Asti"),
+                    Map.entry("fromDate", "Alkupäivä"),
+                    Map.entry("toDate", "Loppupäivä"),
+                    Map.entry("reset", "Tyhjennä"),
+                    Map.entry("search", "Hae"),
+                    Map.entry("firstName", "Etunimi"),
+                    Map.entry("lastName", "Sukunimi"),
+                    Map.entry("email", "Sähköposti")
+            ),
+            "en", Map.ofEntries(
+                    Map.entry("page.title", "Person Search"),
+                    Map.entry("language", "Language"),
+                    Map.entry("language.fi", "Finnish"),
+                    Map.entry("language.en", "English"),
+                    Map.entry("filters", "Filters"),
+                    Map.entry("name", "Name"),
+                    Map.entry("phone", "Phone"),
+                    Map.entry("dateOfBirth", "Date of Birth"),
+                    Map.entry("occupation", "Occupation"),
+                    Map.entry("role", "Role"),
+                    Map.entry("personType", "Person type"),
+                    Map.entry("book", "Book"),
+                    Map.entry("firstOrLastName", "First or last name"),
+                    Map.entry("from", "From"),
+                    Map.entry("to", "To"),
+                    Map.entry("fromDate", "From date"),
+                    Map.entry("toDate", "To date"),
+                    Map.entry("reset", "Reset"),
+                    Map.entry("search", "Search"),
+                    Map.entry("firstName", "First name"),
+                    Map.entry("lastName", "Last name"),
+                    Map.entry("email", "Email")
+            )
+    );
+
+    private String t(String key) {
+        return TRANSLATIONS
+                .getOrDefault(currentLocale.getLanguage(), TRANSLATIONS.get("fi"))
+                .getOrDefault(key, key);
+    } 
+
     public GridwithFiltersView(SamplePersonService SamplePersonService) {
+
         this.samplePersonService = SamplePersonService;
+
         setSizeFull();
         addClassNames("gridwith-filters-view");
 
-        filters = new Filters(() -> refreshGrid());
-        VerticalLayout layout = new VerticalLayout(createMobileFilters(), filters, createGrid());
+        pageHeading = new H2();
+        languageSelect = createLanguageSelect();
+
+        filters = new Filters(() -> refreshGrid(), this::t);
+
+        HorizontalLayout toolbar = new HorizontalLayout(pageHeading, languageSelect);
+        toolbar.setWidthFull();
+        toolbar.setAlignItems(FlexComponent.Alignment.CENTER);
+        toolbar.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+        toolbar.addClassNames(LumoUtility.Padding.MEDIUM);
+
+        VerticalLayout layout = new VerticalLayout(toolbar, createMobileFilters(), filters, createGrid());
         layout.setSizeFull();
         layout.setPadding(false);
         layout.setSpacing(false);
+
         add(layout);
+        updateTexts();
+    }
+
+    private void updateTexts() {
+        pageHeading.setText(t("page.title"));
+        languageSelect.setLabel(t("language"));
+
+        if (mobileFiltersHeading != null) {
+            mobileFiltersHeading.setText(t("filters"));
+        }
+
+        if (filters != null) {
+            filters.updateTexts();
+        }
+
+        if (grid != null) {
+            grid.getColumns().get(0).setHeader(t("firstName"));
+            grid.getColumns().get(1).setHeader(t("lastName"));
+            grid.getColumns().get(2).setHeader(t("email"));
+            grid.getColumns().get(3).setHeader(t("phone"));
+            grid.getColumns().get(4).setHeader(t("dateOfBirth"));
+            grid.getColumns().get(5).setHeader(t("occupation"));
+            grid.getColumns().get(6).setHeader(t("role"));
+        }
+
+        getUI().ifPresent(ui -> ui.getPage().setTitle(t("page.title")));
+    }
+
+    private ComboBox<Locale> createLanguageSelect() {
+        ComboBox<Locale> select = new ComboBox<>();
+        select.setItems(new Locale("fi"), Locale.ENGLISH);
+        select.setValue(currentLocale);
+
+        select.setItemLabelGenerator(locale -> {
+            if ("fi".equals(locale.getLanguage())) {
+                return t("language.fi");
+            }
+            return t("language.en");
+        });
+
+        select.addValueChangeListener(event -> {
+            if (event.getValue() != null) {
+                currentLocale = event.getValue();
+                updateTexts();
+            }
+        });
+
+        return select;
     }
 
     private HorizontalLayout createMobileFilters() {
@@ -75,7 +203,8 @@ public class GridwithFiltersView extends Div {
         mobileFilters.addClassName("mobile-filters");
 
         Icon mobileIcon = new Icon("lumo", "plus");
-        Span filtersHeading = new Span("Filters");
+        mobileFiltersHeading = new Span();
+        Span filtersHeading = mobileFiltersHeading;
         mobileFilters.add(mobileIcon, filtersHeading);
         mobileFilters.setFlexGrow(1, filtersHeading);
         mobileFilters.addClickListener(e -> {
@@ -92,18 +221,22 @@ public class GridwithFiltersView extends Div {
 
     public static class Filters extends Div implements Specification<SamplePerson> {
 
-        private final TextField name = new TextField("Name");
-        private final TextField phone = new TextField("Phone");
-        private final DatePicker startDate = new DatePicker("Date of Birth");
+        private final TextField name = new TextField();
+        private final TextField phone = new TextField();
+        private final DatePicker startDate = new DatePicker();
         private final DatePicker endDate = new DatePicker();
+        private final MultiSelectComboBox<String> occupations = new MultiSelectComboBox<>();
+        private final CheckboxGroup<String> roles = new CheckboxGroup<>();
+        private final TextField personType = new TextField();
+        private final TextField book = new TextField();
 
-        private final MultiSelectComboBox<String> occupations = new MultiSelectComboBox<>("Occupation");
-        private final CheckboxGroup<String> roles = new CheckboxGroup<>("Role");
+        private final Button resetBtn = new Button();
+        private final Button searchBtn = new Button();
 
-        private final TextField personType = new TextField("Person type");
-        private final TextField book = new TextField("Book");
+        private final java.util.function.Function<String, String> t;
 
-        public Filters(Runnable onSearch) {
+        public Filters(Runnable onSearch, java.util.function.Function<String, String> t) {
+            this.t = t;
 
             setWidthFull();
             addClassName("filter-layout");
@@ -118,7 +251,6 @@ public class GridwithFiltersView extends Div {
             roles.addClassName("double-width");
 
             // Action buttons
-            Button resetBtn = new Button("Reset");
             resetBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
             resetBtn.addClickListener(e -> {
                 name.clear();
@@ -131,7 +263,6 @@ public class GridwithFiltersView extends Div {
                 book.clear();
                 onSearch.run();
             });
-            Button searchBtn = new Button("Search");
             searchBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
             searchBtn.addClickListener(e -> onSearch.run());
 
@@ -140,6 +271,27 @@ public class GridwithFiltersView extends Div {
             actions.addClassName("actions");
 
             add(name, phone, createDateRangeFilter(), occupations, roles, personType, book, actions);
+            updateTexts();
+        }
+
+        public void updateTexts() {
+            name.setLabel(t.apply("name"));
+            phone.setLabel(t.apply("phone"));
+            startDate.setLabel(t.apply("dateOfBirth"));
+            occupations.setLabel(t.apply("occupation"));
+            roles.setLabel(t.apply("role"));
+            personType.setLabel(t.apply("personType"));
+            book.setLabel(t.apply("book"));
+
+            name.setPlaceholder(t.apply("firstOrLastName"));
+            startDate.setPlaceholder(t.apply("from"));
+            endDate.setPlaceholder(t.apply("to"));
+
+            startDate.setAriaLabel(t.apply("fromDate"));
+            endDate.setAriaLabel(t.apply("toDate"));
+
+            resetBtn.setText(t.apply("reset"));
+            searchBtn.setText(t.apply("search"));
         }
 
         private Component createDateRangeFilter() {
@@ -265,13 +417,14 @@ public class GridwithFiltersView extends Div {
 
     private Component createGrid() {
         grid = new Grid<>(SamplePerson.class, false);
-        grid.addColumn("firstName").setAutoWidth(true);
-        grid.addColumn("lastName").setAutoWidth(true);
-        grid.addColumn("email").setAutoWidth(true);
-        grid.addColumn("phone").setAutoWidth(true);
-        grid.addColumn("dateOfBirth").setAutoWidth(true);
-        grid.addColumn("occupation").setAutoWidth(true);
-        grid.addColumn("role").setAutoWidth(true);
+
+        grid.addColumn("firstName").setHeader(t("firstName")).setAutoWidth(true);
+        grid.addColumn("lastName").setHeader(t("lastName")).setAutoWidth(true);
+        grid.addColumn("email").setHeader(t("email")).setAutoWidth(true);
+        grid.addColumn("phone").setHeader(t("phone")).setAutoWidth(true);
+        grid.addColumn("dateOfBirth").setHeader(t("dateOfBirth")).setAutoWidth(true);
+        grid.addColumn("occupation").setHeader(t("occupation")).setAutoWidth(true);
+        grid.addColumn("role").setHeader(t("role")).setAutoWidth(true);
 
         grid.setItems(query -> samplePersonService.list(VaadinSpringDataHelpers.toSpringPageRequest(query), filters)
                 .stream());
